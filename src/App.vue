@@ -1,10 +1,10 @@
 <script setup>
- import HelloWorld from './components/HelloWorld.vue'
+import InputForm from './components/InputForm.vue'
 </script>
 
 <template>
   <div>
- <HelloWorld/>
+ <InputForm/>
   </div>
 </template>
 
