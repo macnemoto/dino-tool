@@ -1,11 +1,11 @@
 <script setup>
-// import axios from 'axios'
+import axios from 'axios'
 // axios.post('http://localhost:3000/account-recovery', {
 //   date: '03/12/1992',
-//   code: '4019',X
+//   code: '4019',
 //   unanswered: 'N',
-//   familyLoad: '0',X
-//   dni: '20855785'X
+//   familyLoad: '0',
+//   dni: '20855785'
 // })
 //   .then(res => {
 //     console.log(res)
@@ -15,15 +15,47 @@
 //   })
 
 import { watch, ref } from 'vue'
-const value = ref('')
-const value1 = ref('')
-watch(value, () => {
-  console.log(value.value)
-})
-watch(value1, () => {
-  console.log(value1.value)
-})
+const familyLoad = ref('')
+const dni = ref('')
+const code = ref('')
+const date = ref('')
 const dateFormat = 'DD/MM/YYYY'
+const unanswered = 'N'
+const open = ref(false)
+const img = ref('')
+
+watch(familyLoad, () => {
+  console.log(familyLoad.value.toString())
+})
+watch(dni, () => {
+  console.log(dni.value.toString())
+})
+watch(code, () => {
+  console.log(code.value.toString())
+})
+watch(date, () => {
+  console.log(date.value)
+})
+
+const recoveryAccount = () => {
+  axios.post('http://localhost:3000/account-recovery', {
+    date: date.value.toString(),
+    code: code.value.toString(),
+    unanswered,
+    familyLoad: familyLoad.value.toString(),
+    dni: dni.value.toString()
+
+  })
+    .then(res => {
+      open.value = true
+      img.value = res.data.img
+      console.log(img)
+    })
+    .catch(error => {
+      console.log(error)
+    })
+}
+
 </script>
 
 <template >
@@ -46,23 +78,38 @@ const dateFormat = 'DD/MM/YYYY'
       :max="20"
       :maxlength="2"
       placeholder="Cargar familiar"
+      v-model:value.lazy="familyLoad"
     />
     <a-input-number class="w-48 block mb-2 text- text-gray-900 font-bold"
       :min="0"
       :max="99999999"
       placeholder="Cedula"
       :maxlength="8"
+      v-model:value.lazy="dni"
     />
     <a-input-number class="w-48 block mb-2 text- text-gray-900 font-bold"
       :min="0"
       :max="9999"
       placeholder="Codigo Postal"
       :maxlength="4"
+      v-model:value.lazy="code"
     />
-    <a-date-picker class="w-48 block mb-2 text- text-gray-900 font-bold" v-model:value="value1" :format="dateFormat" />
+    <a-date-picker class="w-48 block mb-2 text- text-gray-900 font-bold" v-model:value="date" :valueFormat="dateFormat" :format="dateFormat"  />
+    <a-button class="text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-medium rounded-lg text-sm text-center mr-2 mb-2" @click="recoveryAccount" type="primary">Recuperar Cuenta</a-button>
   </a-space>
   </a-form>
-</div>
+  <a-modal v-model:open="open" title="Basic Modal" >
+    <figure class="relative max-w-sm transition-all duration-300 cursor-pointer filter grayscale hover:grayscale-0">
+  <a href="#">
+    <img class="rounded-lg" :src="img" alt="image description">
+  </a>
+  <figcaption class="absolute px-4 text-lg text-white bottom-6">
+      <p>Por favor rellene el Capchat</p>
+  </figcaption>
+</figure>
+      <p>Some contents...</p>
+    </a-modal>
+  </div>
 </template>
 
 <style scoped>
