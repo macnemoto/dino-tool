@@ -1,7 +1,9 @@
 <script setup>
-import { ref } from 'vue'
+// import { ref } from 'vue'
 import InputForm from './components/InputForm.vue'
-const spinning = ref(false)
+import { useMainStore } from './stores/MainStore'
+const { loader } = useMainStore()
+const spinning = loader
 </script>
 
 <template>

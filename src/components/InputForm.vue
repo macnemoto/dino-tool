@@ -1,5 +1,6 @@
 <script setup>
 import axios from 'axios'
+import { useMainStore } from '../stores/MainStore'
 // axios.post('http://localhost:3000/account-recovery', {
 //   date: '03/12/1992',
 //   code: '4019',
@@ -15,6 +16,7 @@ import axios from 'axios'
 //   })
 
 import { watch, ref } from 'vue'
+const loader = useMainStore()
 const familyLoad = ref('')
 const dni = ref('')
 const code = ref('')
@@ -22,6 +24,7 @@ const date = ref('')
 const dateFormat = 'DD/MM/YYYY'
 const unanswered = 'N'
 const open = ref(false)
+const base = 'data:image/png;base64,'
 const img = ref('')
 
 watch(familyLoad, () => {
@@ -38,6 +41,8 @@ watch(date, () => {
 })
 
 const recoveryAccount = () => {
+  loader.loaderTrue()
+  loader.test()
   axios.post('http://localhost:3000/account-recovery', {
     date: date.value.toString(),
     code: code.value.toString(),
@@ -47,11 +52,13 @@ const recoveryAccount = () => {
 
   })
     .then(res => {
-      open.value = true
+      loader.loaderFalse()
       img.value = res.data.img
+      open.value = true
       console.log(img)
     })
     .catch(error => {
+      loader.loaderFalse()
       console.log(error)
     })
 }
@@ -101,7 +108,7 @@ const recoveryAccount = () => {
   <a-modal v-model:open="open" title="Basic Modal" >
     <figure class="relative max-w-sm transition-all duration-300 cursor-pointer filter grayscale hover:grayscale-0">
   <a href="#">
-    <img class="rounded-lg" :src="img" alt="image description">
+    <img class="rounded-lg" :src="base + img" alt="image description">
   </a>
   <figcaption class="absolute px-4 text-lg text-white bottom-6">
       <p>Por favor rellene el Capchat</p>
