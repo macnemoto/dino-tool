@@ -15,18 +15,24 @@ import { useMainStore } from '../stores/MainStore'
 //     console.log(error)
 //   })
 
-import { watch, ref } from 'vue'
+import { watch, ref, reactive } from 'vue'
 const loader = useMainStore()
 const familyLoad = ref('')
 const dni = ref('')
 const code = ref('')
 const date = ref('')
 const dateFormat = 'DD/MM/YYYY'
+const keyLetter = ref('')
 const unanswered = 'N'
 const open = ref(false)
 const base = 'data:image/png;base64,'
 const img = ref('')
 const captchaValue = ref('')
+
+const state = reactive({
+  checked1: false
+
+})
 
 watch(familyLoad, () => {
   console.log(familyLoad.value.toString())
@@ -40,16 +46,21 @@ watch(code, () => {
 watch(date, () => {
   console.log(date.value)
 })
+watch(keyLetter, () => {
+  console.log(keyLetter.value)
+})
 
+// fetach to try to recover the account
 const recoveryAccount = () => {
   loader.loaderTrue()
   loader.test()
   axios.post('http://localhost:3000/account-recovery', {
     date: date.value.toString(),
     code: code.value.toString(),
-    unanswered,
     familyLoad: familyLoad.value.toString(),
-    dni: dni.value.toString()
+    dni: dni.value.toString(),
+    unanswered: unanswered.toString(),
+    keyLetter: state.checked1 ? keyLetter.value.toString().toUpperCase() : keyLetter.value.toString().toLowerCase()
 
   })
     .then(res => {
@@ -64,6 +75,7 @@ const recoveryAccount = () => {
     })
 }
 
+// search to fill out the captcha
 watch(captchaValue, () => {
   console.log(captchaValue.value)
   axios.post('http://localhost:3000/captcha', {
@@ -71,7 +83,7 @@ watch(captchaValue, () => {
 
   })
     .then(res => {
-      console.log(res)
+      console.log(res.data)
     })
     .catch(error => {
       console.log(error)
@@ -99,6 +111,13 @@ watch(captchaValue, () => {
           placeholder="Cedula" :maxlength="8" v-model:value.lazy="dni" />
         <a-input-number class="w-48 block mb-2 text- text-gray-900 font-bold" :min="0" :max="9999"
           placeholder="Codigo Postal" :maxlength="4" v-model:value.lazy="code" />
+        <div class="flex space-x-2 ">
+          <a-input class="w-48 block mb-2 text- text-gray-900 font-bold" v-model:value.lazy="keyLetter"
+            placeholder='Letra Inicial Ejemplo "V"' :maxlength="1" />
+          <div class="flex mt-1">
+            <a-switch v-model:checked="state.checked1" checked-children="V" un-checked-children="v" />
+          </div>
+        </div>
         <a-date-picker class="w-48 block mb-2 text- text-gray-900 font-bold" v-model:value="date"
           :valueFormat="dateFormat" :format="dateFormat" />
         <a-button
@@ -106,20 +125,20 @@ watch(captchaValue, () => {
           @click="recoveryAccount" type="primary">Recuperar Cuenta</a-button>
       </a-space>
     </a-form>
-    <a-modal v-model:open="open" okType="primary" >
+    <a-modal v-model:open="open" okType="primary">
       <a-space direction="vertical" class="flex justify-center items-center ">
         <p class="text-lg font-bold">Eres un robot, bí-bú? </p>
-          <a href="#">
-            <img class="rounded-lg" :src="base + img" alt="image description">
-          </a>
-          <a-input v-model:value.lazy="captchaValue" autofocus placeholder="Escriba el captcha" />
-        </a-space>
+        <a href="#">
+          <img class="rounded-lg" :src="base + img" alt="image description">
+        </a>
+        <a-input v-model:value.lazy="captchaValue" autofocus placeholder="Escriba el captcha" />
+      </a-space>
     </a-modal>
   </div>
 </template>
 
 <style scoped>
-.ant-modal-content{
-background-color:#77dd77 !important ;
+.ant-modal-content {
+  background-color: #77dd77 !important;
 }
 </style>
