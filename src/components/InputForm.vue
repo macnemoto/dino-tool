@@ -1,26 +1,12 @@
 <script setup>
 import axios from 'axios'
 import { useMainStore } from '../stores/MainStore'
-// axios.post('http://localhost:3000/account-recovery', {
-//   date: '03/12/1992',
-//   code: '4019',
-//   unanswered: 'N',
-//   familyLoad: '0',
-//   dni: '20855785'
-// })
-//   .then(res => {
-//     console.log(res)
-//   })
-//   .catch(error => {
-//     console.log(error)
-//   })
-
 import { watch, ref, reactive } from 'vue'
 const loader = useMainStore()
-const familyLoad = ref('')
-const dni = ref('')
-const code = ref('')
-const date = ref('')
+const familyLoad = ref(import.meta.env.VITE_FAMILYLOAD)
+const dni = ref(import.meta.env.VITE_DNI)
+const code = ref(import.meta.env.VITE_CODE)
+const date = ref(import.meta.env.VITE_DATE)
 const dateFormat = 'DD/MM/YYYY'
 const keyLetter = ref('')
 const unanswered = 'N'
@@ -28,12 +14,10 @@ const open = ref(false)
 const base = 'data:image/png;base64,'
 const img = ref('')
 const captchaValue = ref('')
-
 const state = reactive({
   checked1: false
 
 })
-
 watch(familyLoad, () => {
   console.log(familyLoad.value.toString())
 })
@@ -96,12 +80,11 @@ watch(captchaValue, () => {
   <div>
     <div>
 
-      <h2 class="text-4xl font-bold dark:text-white mb-20 ">Dino Tool</h2>
-
-      <img class="h-auto max-w-lg rounded-lg mb-10 "
-        src="https://fresh.deno.dev/illustration/lemon-squash.svg?__frsh_c=5b73c33e2a2b5a2dac54486291c6495550cf5c4f"
-        alt="image description">
+      <img class="h-auto max-w-lg rounded-lg mb-10 logo mt-40"
+      src="https://fresh.deno.dev/illustration/lemon-squash.svg?__frsh_c=5b73c33e2a2b5a2dac54486291c6495550cf5c4f"
+      alt="image description">
     </div>
+    <h2 class="text-4xl font-bold dark:text-white mb-20 ">Dino Tool</h2>
     <a-form layout="horizontal" style="max-width: 600px">
       <a-space direction="vertical">
         <!-- <a-input v-model:value.lazy="value1" autofocus placeholder="Cargar familiar" /> -->
@@ -141,4 +124,8 @@ watch(captchaValue, () => {
 .ant-modal-content {
   background-color: #77dd77 !important;
 }
+ .logo {
+  filter: drop-shadow(0 0 6em hsla(56, 93%, 52%, 0.904));
+}
+
 </style>

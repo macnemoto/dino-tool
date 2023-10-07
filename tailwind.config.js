@@ -5,7 +5,11 @@ export default {
     './src/**/*.{vue,js,ts,jsx,tsx}'
   ],
   theme: {
-    extend: {}
+    extend: {
+      dropShadow: {
+        custom: '0 0 6em hsla(56, 93%, 52%, 0.904)'
+      }
+    }
   },
   plugins: []
 }
