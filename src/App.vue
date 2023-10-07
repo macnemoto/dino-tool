@@ -14,5 +14,7 @@ const spinning = loader
   </a-spin>
   </template>
 <style scoped>
-
+body {
+  background-color: blue;
+}
 </style>
