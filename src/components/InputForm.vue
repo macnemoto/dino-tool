@@ -40,8 +40,8 @@ const recoveryAccount = () => {
     code: code.value.toString(),
     familyLoad: familyLoad.value.toString(),
     dni: dni.value.toString(),
-    unanswered: unanswered.toString()
-
+    unanswered: unanswered.toString(),
+    keyLetter: keyLetter.value.toString().toLocaleLowerCase()
   })
     .then(res => {
       loader.loaderFalse()
