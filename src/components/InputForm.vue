@@ -66,7 +66,10 @@ watch(captchaValue, () => {
       console.log(res.data)
     })
     .catch(error => {
-      console.log(error)
+      console.log(error.response.data.error)
+      if (error.response.data.error === 'El código de validación no coincincide con la imagen.') {
+        console.log(error.response.data.error)
+      }
     })
 })
 
