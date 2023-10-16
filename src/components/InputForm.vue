@@ -2,6 +2,7 @@
 import axios from 'axios'
 import { useMainStore } from '../stores/MainStore'
 import { watch, ref } from 'vue'
+import { notification } from 'ant-design-vue'
 const loader = useMainStore()
 const familyLoad = ref(import.meta.env.VITE_FAMILYLOAD)
 const dni = ref(import.meta.env.VITE_DNI)
@@ -14,6 +15,9 @@ const open = ref(false)
 const base = 'data:image/png;base64,'
 const img = ref('')
 const captchaValue = ref('')
+const responseServer = ref('Eres un robot, bí-bú?')
+const statusInput = ref(null)
+const textError = ref(false)
 
 watch(familyLoad, () => {
   console.log(familyLoad.value.toString())
@@ -30,6 +34,15 @@ watch(date, () => {
 watch(keyLetter, () => {
   console.log(keyLetter.value)
 })
+
+// Notificaciones
+const openNotificationWithIcon = (type) => {
+  notification[type]({
+    message: 'Error de Conexion',
+    description:
+      'Hubo un problema al tratar de conectar con la pagina, pruebe mas tarde.'
+  })
+}
 
 // fetach to try to recover the account
 const recoveryAccount = () => {
@@ -52,6 +65,7 @@ const recoveryAccount = () => {
     .catch(error => {
       loader.loaderFalse()
       console.log(error)
+      openNotificationWithIcon('error')
     })
 }
 
@@ -68,7 +82,9 @@ watch(captchaValue, () => {
     .catch(error => {
       console.log(error.response.data.error)
       if (error.response.data.error === 'El código de validación no coincincide con la imagen.') {
-        console.log(error.response.data.error)
+        responseServer.value = 'El CAPTCHA no se completó correctamente.'
+        statusInput.value = 'error'
+        textError.value = true
       }
     })
 })
@@ -120,13 +136,13 @@ watch(captchaValue, () => {
         </a-space>
       </a-form>
     </div>
-    <a-modal v-model:open="open" okType="primary">
+    <a-modal v-model:open="open" okType="primary" :centered="true" :maskClosable="false">
       <a-space direction="vertical" class="flex justify-center items-center ">
-        <p class="text-lg font-bold">Eres un robot, bí-bú? </p>
+        <p class="text-lg font-bold" :class="{ 'text-red-700': textError }">{{ responseServer }}</p>
         <a href="#">
           <img class="rounded-lg" :src="base + img" alt="image description">
         </a>
-        <a-input v-model:value.lazy="captchaValue" autofocus placeholder="Escriba el captcha" />
+        <a-input v-model:value.lazy="captchaValue" autofocus placeholder="Escriba el captcha" :status="statusInput"/>
       </a-space>
     </a-modal>
   </div>
@@ -139,5 +155,9 @@ watch(captchaValue, () => {
 
 .logo {
   filter: drop-shadow(0 0 6em hsla(56, 93%, 52%, 0.904));
+}
+
+body > div:nth-child(3) > div > div.ant-modal-wrap.ant-modal-centered > div > div.ant-modal-content > div.ant-modal-footer > button.css-dev-only-do-not-override-kqecok.ant-btn.ant-btn-primary{
+  background-color: blueviolet
 }
 </style>
