@@ -35,7 +35,7 @@ watch(keyLetter, () => {
   console.log(keyLetter.value)
 })
 
-// Notificaciones
+// Notifications
 const openNotificationWithIcon = (type) => {
   notification[type]({
     message: 'Error de Conexion',
@@ -89,6 +89,10 @@ watch(captchaValue, () => {
     })
 })
 
+const test = () => {
+  console.log('esto es una prueba')
+}
+
 </script>
 
 <template>
@@ -139,7 +143,7 @@ watch(captchaValue, () => {
     <a-modal v-model:open="open" okType="primary" :centered="true" :maskClosable="false">
       <a-space direction="vertical" class="flex justify-center items-center ">
         <p class="text-lg font-bold" :class="{ 'text-red-700': textError }">{{ responseServer }}</p>
-        <a href="#">
+        <a href="#" :click="test">
           <img class="rounded-lg" :src="base + img" alt="image description">
         </a>
         <a-input v-model:value.lazy="captchaValue" autofocus placeholder="Escriba el captcha" :status="statusInput"/>
