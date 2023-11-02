@@ -77,12 +77,17 @@ watch(captchaValue, () => {
 
   })
     .then(res => {
-      console.log(res.data)
+      console.log(res)
     })
     .catch(error => {
-      console.log(error.response.data.error)
-      if (error.response.data.error === 'El código de validación no coincincide con la imagen.') {
+      console.log(error)
+      // console.log(error.response.data.error)
+      if (error.response.data.server === 'El código de validación no coincincide con la imagen.') {
         responseServer.value = 'El CAPTCHA no se completó correctamente.'
+        statusInput.value = 'error'
+        textError.value = true
+      } else if (error.response.data.server === 'La contraseña ya está en uso.') {
+        responseServer.value = 'La contraseña ya está en uso.'
         statusInput.value = 'error'
         textError.value = true
       }
