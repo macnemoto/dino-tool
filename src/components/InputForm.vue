@@ -87,7 +87,7 @@ watch(captchaValue, () => {
         statusInput.value = 'error'
         textError.value = true
       } else if (error.response.data.server === 'La contraseña ya está en uso.') {
-        responseServer.value = 'La contraseña ya está en uso.'
+        responseServer.value = 'La contraseña ya está en uso.(Posible mente)'
         statusInput.value = 'error'
         textError.value = true
       }
@@ -96,6 +96,16 @@ watch(captchaValue, () => {
 
 const test = () => {
   console.log('esto es una prueba')
+  axios.post('http://localhost:3000/imageChange')
+    .then(function (res) {
+      img.value = res.data.img
+      open.value = true
+      console.log(img)
+      console.log(res)
+    })
+    .catch(function (error) {
+      console.log(error)
+    })
 }
 
 </script>
@@ -148,7 +158,7 @@ const test = () => {
     <a-modal v-model:open="open" okType="primary" :centered="true" :maskClosable="false">
       <a-space direction="vertical" class="flex justify-center items-center ">
         <p class="text-lg font-bold" :class="{ 'text-red-700': textError }">{{ responseServer }}</p>
-        <a href="#" :click="test">
+        <a href="#" @click="test()">
           <img class="rounded-lg" :src="base + img" alt="image description">
         </a>
         <a-input v-model:value.lazy="captchaValue" autofocus placeholder="Escriba el captcha" :status="statusInput"/>
