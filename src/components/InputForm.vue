@@ -83,11 +83,11 @@ watch(captchaValue, () => {
       console.log(error)
       // console.log(error.response.data.error)
       if (error.response.data.server === 'El código de validación no coincincide con la imagen.') {
-        responseServer.value = 'El CAPTCHA no se completó correctamente.'
+        responseServer.value = 'El código de validación no coincincide con la imagen.'
         statusInput.value = 'error'
         textError.value = true
       } else if (error.response.data.server === 'La contraseña ya está en uso.') {
-        responseServer.value = 'La contraseña ya está en uso.(Posible mente)'
+        responseServer.value = 'La contraseña ya está en uso. <br> (Posible mente)'
         statusInput.value = 'error'
         textError.value = true
       }
