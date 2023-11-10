@@ -3,6 +3,8 @@ import axios from 'axios'
 import { useMainStore } from '../stores/MainStore'
 import { watch, ref } from 'vue'
 import { notification } from 'ant-design-vue'
+import confetti from 'canvas-confetti'
+
 const loader = useMainStore()
 const familyLoad = ref(import.meta.env.VITE_FAMILYLOAD)
 const dni = ref(import.meta.env.VITE_DNI)
@@ -18,6 +20,9 @@ const captchaValue = ref('')
 const responseServer = ref('Eres un robot, bí-bú?')
 const statusInput = ref(null)
 const textError = ref(false)
+const modalSuccess = ref(false)
+const userAccount = ref(null)
+const pwAccount = ref(null)
 
 watch(familyLoad, () => {
   console.log(familyLoad.value.toString())
@@ -78,6 +83,10 @@ watch(captchaValue, () => {
   })
     .then(res => {
       console.log(res)
+      userAccount.value = res.data.userData
+      pwAccount.value = res.data.password
+      modalSuccess.value = true
+      confeti()
     })
     .catch(error => {
       console.log(error)
@@ -106,6 +115,13 @@ const test = () => {
     .catch(function (error) {
       console.log(error)
     })
+}
+const confeti = () => {
+  confetti({
+    particleCount: 100,
+    spread: 70,
+    origin: { y: 0.6 }
+  })
 }
 
 </script>
@@ -156,13 +172,22 @@ const test = () => {
       </a-form>
     </div>
     <a-modal v-model:open="open" okType="primary" :centered="true" :maskClosable="false">
+      <div v-if="modalSuccess" class="flex justify-center items-center" >
       <a-space direction="vertical" class="flex justify-center items-center ">
-        <p class="text-lg font-bold" :class="{ 'text-red-700': textError }">{{ responseServer }}</p>
-        <a href="#" @click="test()">
-          <img class="rounded-lg" :src="base + img" alt="image description">
-        </a>
-        <a-input v-model:value.lazy="captchaValue" autofocus placeholder="Escriba el captcha" :status="statusInput"/>
+  <h1 class="font-bold text-green-400 text-2xl ">Cuenta recuperada !</h1>
+        <h2>Usuario: {{ userAccount }} <img class="w-24 h-9" src="https://www.svgrepo.com/show/309480/copy.svg" alt="" srcset=""></h2>
+        <h2>Clave: {{ pwAccount }} <img class="w-24 h-9" src="https://www.svgrepo.com/show/309480/copy.svg" alt="" srcset=""></h2>
       </a-space>
+      </div>
+      <div v-else>
+        <a-space direction="vertical" class="flex justify-center items-center ">
+          <p class="text-lg font-bold" :class="{ 'text-red-700': textError }">{{ responseServer }}</p>
+          <a href="#" @click="test()">
+            <img class="rounded-lg" :src="base + img" alt="image description">
+          </a>
+          <a-input v-model:value.lazy="captchaValue" autofocus placeholder="Escriba el captcha" :status="statusInput"/>
+        </a-space>
+      </div>
     </a-modal>
   </div>
 </template>
